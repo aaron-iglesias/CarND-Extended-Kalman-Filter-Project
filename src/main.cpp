@@ -5,9 +5,6 @@
 #include "FusionEKF.h"
 #include "tools.h"
 
-using namespace std;
-
-// for convenience
 using json = nlohmann::json;
 
 // Checks if the SocketIO event has JSON data.
@@ -29,18 +26,18 @@ std::string hasData(std::string s) {
 int main() {
   uWS::Hub h;
 
-  // Create a Kalman Filter instance
+  // Create a Kalman Filter instance.
   FusionEKF fusionEKF;
 
-  // used to compute the RMSE later
+  // Used to compute the RMSE later.
   Tools tools;
   vector<VectorXd> estimations;
   vector<VectorXd> ground_truth;
 
   h.onMessage([&fusionEKF,&tools,&estimations,&ground_truth](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
-    // The 4 signifies a websocket message
-    // The 2 signifies a websocket event
+    // The 4 signifies a websocket message.
+    // The 2 signifies a websocket event.
 
     if (length && length > 2 && data[0] == '4' && data[1] == '2') {
       auto s = hasData(std::string(data));
@@ -55,7 +52,7 @@ int main() {
           istringstream iss(sensor_measurment);
     	  long long timestamp;
 
-    	  // reads first element from the current line
+    	  // Reads first element from the current line.
     	  string sensor_type;
     	  iss >> sensor_type;
 
@@ -97,10 +94,10 @@ int main() {
     	  gt_values(3) = vy_gt;
     	  ground_truth.push_back(gt_values);
           
-          //Call ProcessMeasurment(meas_package) for Kalman filter
+          // Call ProcessMeasurment(meas_package) for Kalman filter.
     	  fusionEKF.ProcessMeasurement(meas_package);    	  
 
-    	  //Push the current estimated x,y positon from the Kalman filter's state vector
+    	  // Push the current estimated x,y positon from the Kalman filter's state vector.
 
     	  VectorXd estimate(4);
 
@@ -126,7 +123,7 @@ int main() {
           msgJson["rmse_vx"] = RMSE(2);
           msgJson["rmse_vy"] = RMSE(3);
           auto msg = "42[\"estimate_marker\"," + msgJson.dump() + "]";
-          // std::cout << msg << std::endl;
+
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 	  
         }
@@ -138,7 +135,7 @@ int main() {
   });
 
   // We don't need this since we're not using HTTP but if it's removed the program
-  // doesn't compile :-(
+  // doesn't compile.
   h.onHttpRequest([](uWS::HttpResponse *res, uWS::HttpRequest req, char *data, size_t, size_t) {
     const std::string s = "<h1>Hello world!</h1>";
     if (req.getUrl().valueLength == 1) {
