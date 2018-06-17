@@ -20,14 +20,13 @@ std::string hasData(std::string s) {
   if (found_null != std::string::npos) {
     return "";
   }
-  else if (b1 != std::string::npos && b2 != std::string::npos) {
+  if (b1 != std::string::npos && b2 != std::string::npos) {
     return s.substr(b1, b2 - b1 + 1);
   }
   return "";
 }
 
-int main()
-{
+int main() {
   uWS::Hub h;
 
   // Create a Kalman Filter instance
@@ -43,19 +42,13 @@ int main()
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
 
-    if (length && length > 2 && data[0] == '4' && data[1] == '2')
-    {
-
+    if (length && length > 2 && data[0] == '4' && data[1] == '2') {
       auto s = hasData(std::string(data));
       if (s != "") {
-      	
-        auto j = json::parse(s);
-
+      	auto j = json::parse(s);
         std::string event = j[0].get<std::string>();
-        
         if (event == "telemetry") {
           // j[1] is the data JSON object
-          
           string sensor_measurment = j[1]["sensor_measurement"];
           
           MeasurementPackage meas_package;
@@ -67,28 +60,27 @@ int main()
     	  iss >> sensor_type;
 
     	  if (sensor_type.compare("L") == 0) {
-      	  		meas_package.sensor_type_ = MeasurementPackage::LASER;
-          		meas_package.raw_measurements_ = VectorXd(2);
-          		float px;
-      	  		float py;
-          		iss >> px;
-          		iss >> py;
-          		meas_package.raw_measurements_ << px, py;
-          		iss >> timestamp;
-          		meas_package.timestamp_ = timestamp;
+  	  		meas_package.sensor_type_ = MeasurementPackage::LASER;
+      		meas_package.raw_measurements_ = VectorXd(2);
+      		float px;
+  	  		float py;
+      		iss >> px;
+      		iss >> py;
+      		meas_package.raw_measurements_ << px, py;
+      		iss >> timestamp;
+      		meas_package.timestamp_ = timestamp;
           } else if (sensor_type.compare("R") == 0) {
-
-      	  		meas_package.sensor_type_ = MeasurementPackage::RADAR;
-          		meas_package.raw_measurements_ = VectorXd(3);
-          		float ro;
-      	  		float theta;
-      	  		float ro_dot;
-          		iss >> ro;
-          		iss >> theta;
-          		iss >> ro_dot;
-          		meas_package.raw_measurements_ << ro,theta, ro_dot;
-          		iss >> timestamp;
-          		meas_package.timestamp_ = timestamp;
+  	  		meas_package.sensor_type_ = MeasurementPackage::RADAR;
+      		meas_package.raw_measurements_ = VectorXd(3);
+      		float ro;
+  	  		float theta;
+  	  		float ro_dot;
+      		iss >> ro;
+      		iss >> theta;
+      		iss >> ro_dot;
+      		meas_package.raw_measurements_ << ro,theta, ro_dot;
+      		iss >> timestamp;
+      		meas_package.timestamp_ = timestamp;
           }
           float x_gt;
     	  float y_gt;
@@ -139,24 +131,20 @@ int main()
 	  
         }
       } else {
-        
         std::string msg = "42[\"manual\",{}]";
         ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
       }
     }
-
   });
 
   // We don't need this since we're not using HTTP but if it's removed the program
   // doesn't compile :-(
   h.onHttpRequest([](uWS::HttpResponse *res, uWS::HttpRequest req, char *data, size_t, size_t) {
     const std::string s = "<h1>Hello world!</h1>";
-    if (req.getUrl().valueLength == 1)
-    {
+    if (req.getUrl().valueLength == 1) {
       res->end(s.data(), s.length());
     }
-    else
-    {
+    else {
       // i guess this should be done more gracefully?
       res->end(nullptr, 0);
     }
@@ -172,12 +160,10 @@ int main()
   });
 
   int port = 4567;
-  if (h.listen(port))
-  {
+  if (h.listen(port)) {
     std::cout << "Listening to port " << port << std::endl;
   }
-  else
-  {
+  else {
     std::cerr << "Failed to listen to port" << std::endl;
     return -1;
   }
