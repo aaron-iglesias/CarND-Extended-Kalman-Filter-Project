@@ -15,6 +15,8 @@ public:
   void Predict();
   void Update(const Eigen::VectorXd &z);
 
+  void UpdateEKF(const Eigen::VectorXd &z);
+
 private:
   KalmanFilter(const Eigen::VectorXd &x, const Eigen::MatrixXd &P,
                const Eigen::MatrixXd &F, const Eigen::MatrixXd &Q,

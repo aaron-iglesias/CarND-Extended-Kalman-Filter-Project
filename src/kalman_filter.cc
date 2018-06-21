@@ -34,3 +34,7 @@ void KalmanFilter::Update(const Eigen::VectorXd &z) {
   const Eigen::MatrixXd I = Eigen::MatrixXd::Identity(K.rows(), K.rows());
   P_ = (I - K * H_) * P_;
 }
+
+void KalmanFilter::UpdateEKF(const Eigen::VectorXd &z) {
+	
+}
