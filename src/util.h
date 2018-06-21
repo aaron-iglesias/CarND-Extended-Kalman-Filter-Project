@@ -3,10 +3,8 @@
 
 #include "Eigen/Dense"
 
-class Util {
-public:
-  const Eigen::VectorXd
-  CartesianToPolar(const Eigen::VectorXd &cartesian_coordinates);
-};
+namespace util {
+	const Eigen::VectorXd CartesianToPolar(const Eigen::VectorXd &cartesian_coordinates);
+}
 
 #endif
