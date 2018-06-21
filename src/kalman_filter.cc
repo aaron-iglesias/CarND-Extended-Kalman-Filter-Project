@@ -1,5 +1,5 @@
-#include "kalman_filter.h"
 #include "Eigen/Dense"
+#include "kalman_filter.h"
 #include "util.h"
 
 std::unique_ptr<KalmanFilter>
@@ -26,9 +26,19 @@ void KalmanFilter::Predict() {
   P_ = F_ * P_ * F_.transpose() + Q_;
 }
 
-// TODO(aaron-iglesias): Refactor code to avoid redundancy.
+// TODO(aaron-iglesias): (1) change string to ENUM, (2) throw exception for
+// invalid string input.
+void KalmanFilter::Update(const Eigen::VectorXd &z,
+                          const std::string &sensor_type) {
+  if (sensor_type == "lidar") {
+    UpdateWithLidarMeasurement(z);
+  } else if (sensor_type == "radar") {
+    UpdateWithRadarMeasurement(z);
+  }
+}
 
-void KalmanFilter::Update(const Eigen::VectorXd &z) {
+// TODO(aaron-iglesias): (1) refactor code to avoid redundancy.
+void KalmanFilter::UpdateWithLidarMeasurement(const Eigen::VectorXd &z) {
   const Eigen::VectorXd y = z - H_ * x_;
   const Eigen::MatrixXd Ht = H_.transpose();
   const Eigen::MatrixXd S = H_ * P_ * Ht + R_;
@@ -38,7 +48,7 @@ void KalmanFilter::Update(const Eigen::VectorXd &z) {
   P_ = (I - K * H_) * P_;
 }
 
-void KalmanFilter::UpdateEKF(const Eigen::VectorXd &z) {
+void KalmanFilter::UpdateWithRadarMeasurement(const Eigen::VectorXd &z) {
   const Eigen::VectorXd y = z - util::CartesianToPolar(x_);
   const Eigen::MatrixXd Ht = H_.transpose();
   const Eigen::MatrixXd S = H_ * P_ * Ht + R_;

@@ -13,14 +13,17 @@ public:
   ~KalmanFilter();
 
   void Predict();
-  void Update(const Eigen::VectorXd &z);
 
-  void UpdateEKF(const Eigen::VectorXd &z);
+  void Update(const Eigen::VectorXd &z, const std::string &sensor_type);
 
 private:
   KalmanFilter(const Eigen::VectorXd &x, const Eigen::MatrixXd &P,
                const Eigen::MatrixXd &F, const Eigen::MatrixXd &Q,
                const Eigen::MatrixXd &H, const Eigen::MatrixXd &R);
+
+  void UpdateWithLidarMeasurement(const Eigen::VectorXd &z);
+  void UpdateWithRadarMeasurement(const Eigen::VectorXd &z);
+
   // Estimate.
   Eigen::VectorXd x_;
   // Uncertainty covariance.
