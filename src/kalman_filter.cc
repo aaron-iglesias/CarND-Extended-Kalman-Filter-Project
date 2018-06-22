@@ -50,6 +50,7 @@ void KalmanFilter::UpdateWithLidarMeasurement(const Eigen::VectorXd &z) {
 
 void KalmanFilter::UpdateWithRadarMeasurement(const Eigen::VectorXd &z) {
   const Eigen::VectorXd y = z - util::CartesianToPolar(x_);
+  H_ = util::Jacobian(x_);
   const Eigen::MatrixXd Ht = H_.transpose();
   const Eigen::MatrixXd S = H_ * P_ * Ht + R_;
   const Eigen::MatrixXd K = P_ * Ht * S.inverse();
