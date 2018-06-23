@@ -2,6 +2,7 @@
 #define KALMAN_FILTER_H
 
 #include "Eigen/Dense"
+#include "sensor_type.h"
 
 class KalmanFilter {
 public:
@@ -14,7 +15,7 @@ public:
 
   void Predict();
 
-  void Update(const Eigen::VectorXd &z, const std::string &sensor_type);
+  void Update(const Eigen::VectorXd &z, const SensorType sensor_type);
 
 private:
   KalmanFilter(const Eigen::VectorXd &x, const Eigen::MatrixXd &P,

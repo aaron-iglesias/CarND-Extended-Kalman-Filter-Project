@@ -1,5 +1,6 @@
 #include "Eigen/Dense"
 #include "kalman_filter.h"
+#include "sensor_type.h"
 #include "util.h"
 
 std::unique_ptr<KalmanFilter>
@@ -26,13 +27,11 @@ void KalmanFilter::Predict() {
   P_ = F_ * P_ * F_.transpose() + Q_;
 }
 
-// TODO(aaron-iglesias): (1) change string to ENUM, (2) throw exception for
-// invalid string input.
 void KalmanFilter::Update(const Eigen::VectorXd &z,
-                          const std::string &sensor_type) {
-  if (sensor_type == "lidar") {
+                          const SensorType sensor_type) {
+  if (sensor_type == SensorType::LIDAR) {
     UpdateWithLidarMeasurement(z);
-  } else if (sensor_type == "radar") {
+  } else if (sensor_type == SensorType::RADAR) {
     UpdateWithRadarMeasurement(z);
   }
 }
